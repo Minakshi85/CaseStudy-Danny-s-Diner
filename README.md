@@ -222,7 +222,50 @@ Each of the following case study questions can be answered using a single SQL st
 
 7. Which item was purchased just before the customer became a member?
 
+**Query #7**
+
+    WITH firstpurchase as
+      (SELECT
+          s.customer_id, product_name, s.order_date,
+          DENSE_RANK() OVER(PARTITION BY s.customer_id ORDER BY order_date) as rnk
+      FROM dannys_diner.sales s
+      LEFT JOIN dannys_diner.menu m
+      ON m.product_id = s.product_id
+      LEFT JOIN dannys_diner.members mem
+      ON mem.customer_id = s.customer_id
+      WHERE order_date <= join_date)
+    SELECT
+      	customer_id, product_name, order_date FROM firstpurchase
+    WHERE rnk =1;
+
+| customer_id | product_name | order_date               |
+| ----------- | ------------ | ------------------------ |
+| A           | sushi        | 2021-01-01T00:00:00.000Z |
+| A           | curry        | 2021-01-01T00:00:00.000Z |
+| B           | curry        | 2021-01-01T00:00:00.000Z |
+
+---
+
 8. What is the total items and amount spent for each member before they became a member?
+
+**Query #8**
+
+    SELECT
+        s.customer_id, COUNT( DISTINCT product_name) AS product_count, SUM(m.price) AS total_price
+    FROM dannys_diner.sales s
+    LEFT JOIN dannys_diner.menu m
+    ON m.product_id = s.product_id
+    LEFT JOIN dannys_diner.members mem
+    ON mem.customer_id = s.customer_id
+    WHERE order_date < join_date
+    GROUP BY s.customer_id;
+
+| customer_id | product_count | total_price |
+| ----------- | ------------- | ----------- |
+| A           | 2             | 25          |
+| B           | 2             | 40          |
+
+---
 
 9. If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?
 
