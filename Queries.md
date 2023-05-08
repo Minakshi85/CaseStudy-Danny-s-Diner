@@ -251,7 +251,7 @@ Each of the following case study questions can be answered using a single SQL st
 **Query #8**
 
     SELECT
-        s.customer_id, COUNT( DISTINCT product_name) AS product_count, SUM(m.price) AS total_price
+        s.customer_id, COUNT(product_name) AS product_count, SUM(m.price) AS total_price
     FROM dannys_diner.sales s
     LEFT JOIN dannys_diner.menu m
     ON m.product_id = s.product_id
@@ -263,10 +263,31 @@ Each of the following case study questions can be answered using a single SQL st
 | customer_id | product_count | total_price |
 | ----------- | ------------- | ----------- |
 | A           | 2             | 25          |
-| B           | 2             | 40          |
+| B           | 3             | 40          |
 
 ---
 
 9. If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?
+
+**Query #9**
+
+    SELECT
+        s.customer_id,  
+    SUM(CASE WHEN m.product_name ='sushi' THEN 20*m.price ELSE 10*m.price END) as points
+    FROM dannys_diner.sales s
+    LEFT JOIN dannys_diner.menu m
+    ON m.product_id = s.product_id
+    LEFT JOIN dannys_diner.members mem
+    ON mem.customer_id = s.customer_id
+    GROUP BY s.customer_id
+    ORDER BY s.customer_id;
+
+| customer_id | points |
+| ----------- | ------ |
+| A           | 860    |
+| B           | 940    |
+| C           | 360    |
+
+---
 
 10. In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customer A and B have at the end of January?
