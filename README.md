@@ -1,4 +1,4 @@
-                                                                                       🍜 Case Study #1: Danny's Diner
+🍜 Case Study #1: Danny's Diner
                                                                                       
 ## Case Study Questions
 Each of the following case study questions can be answered using a single SQL statement:
