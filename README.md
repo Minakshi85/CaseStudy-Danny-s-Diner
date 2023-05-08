@@ -5,6 +5,27 @@ Each of the following case study questions can be answered using a single SQL st
 
 1 What is the total amount each customer spent at the restaurant?
 
+**Query #1**
+
+    SELECT
+      	customer_id, sum(price) as total_amount
+    FROM dannys_diner.sales s
+    LEFT JOIN dannys_diner.menu m
+    ON m.product_id = s.product_id
+    GROUP BY customer_id
+    ORDER BY customer_id ;
+
+| customer_id | total_amount |
+| ----------- | ------------ |
+| A           | 76           |
+| B           | 74           |
+| C           | 36           |
+
+---
+
+[View on DB Fiddle](https://www.db-fiddle.com/f/2rM8RAnq7h5LLDTzZiRWcd/138)
+
+
 2 How many days has each customer visited the restaurant?
 
 3 What was the first item from the menu purchased by each customer?
