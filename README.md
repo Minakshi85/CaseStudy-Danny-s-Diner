@@ -149,6 +149,7 @@ Each of the following case study questions can be answered using a single SQL st
 
 ---
 
+
 4. What is the most purchased item on the menu and how many times was it purchased by all customers?
 
 **Query #4**
@@ -166,9 +167,10 @@ Each of the following case study questions can be answered using a single SQL st
 | ramen        | 8              |
 
 ---
+
 5. Which item was the most popular for each customer?
 
-**Query #1**
+**Query #5**
 
     WITH PopularItem as
     (SELECT
@@ -194,6 +196,29 @@ Each of the following case study questions can be answered using a single SQL st
 ---
 
 6. Which item was purchased first by the customer after they became a member?
+
+**Query #6**
+
+    WITH firstpurchase as
+      (SELECT
+          s.customer_id, product_name, s.order_date,
+          DENSE_RANK() OVER(PARTITION BY s.customer_id ORDER BY order_date) as rnk
+      FROM dannys_diner.sales s
+      LEFT JOIN dannys_diner.menu m
+      ON m.product_id = s.product_id
+      LEFT JOIN dannys_diner.members mem
+      ON mem.customer_id = s.customer_id
+      WHERE order_date >= join_date)
+    SELECT
+      	customer_id, product_name, order_date FROM firstpurchase
+    WHERE rnk =1;
+
+| customer_id | product_name | order_date               |
+| ----------- | ------------ | ------------------------ |
+| A           | curry        | 2021-01-07T00:00:00.000Z |
+| B           | sushi        | 2021-01-11T00:00:00.000Z |
+
+---
 
 7. Which item was purchased just before the customer became a member?
 
