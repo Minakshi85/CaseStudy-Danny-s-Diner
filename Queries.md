@@ -294,12 +294,9 @@ Each of the following case study questions can be answered using a single SQL st
 
 **Query #10**
 
-
  SELECT
-        s.customer_id, 
-        SUM(CASE WHEN product_name ='sushi' OR 
-            order_date  BETWEEN join_date AND join_date + INTERVAL '+6 day'
-            THEN price*20 ELSE price*10 END) AS total_points
+        s.customer_id,  
+        SUM(CASE WHEN product_name ='sushi' OR order_date  BETWEEN join_date AND join_date + INTERVAL '+6 day' THEN price*20 ELSE price*10 END) AS total_points
     FROM dannys_diner.sales s
     LEFT JOIN dannys_diner.menu m
     ON m.product_id = s.product_id
